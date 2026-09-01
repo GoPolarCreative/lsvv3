@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="16" fill="#171918"/>
+  <rect x="18" y="30" width="64" height="40" rx="4" fill="#ffd100" transform="skewX(-8)"/>
+  <text x="50" y="58" font-family="'Space Grotesk', 'Arial Black', sans-serif" font-size="26" font-weight="700" fill="#171918" text-anchor="middle" letter-spacing="-1">LSV</text>
+</svg>
