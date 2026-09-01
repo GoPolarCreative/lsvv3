@@ -9,6 +9,8 @@ import {
   Clock3,
   FileText,
   Leaf,
+  Mail,
+  MapPin,
   Menu,
   Phone,
   ShieldCheck,
@@ -17,7 +19,13 @@ import {
   X,
   Zap,
 } from 'lucide-react';
+
 const WEB3FORMS_ACCESS_KEY = '537d443b-7542-48d4-b89a-a283021dfcfa';
+const PHONE_DISPLAY = '0401 697 323';
+const PHONE_HREF = 'tel:0401697323';
+const EMAIL = 'lachlan@lsvservices.com.au';
+const GOOGLE_REVIEW_URL = 'https://g.page/r/CSCafEnf1Wc0EBM/review';
+const IMAGE_BASE = '/images/';
 
 const services = [
   { title: 'Grounds maintenance', text: 'Regular care that keeps your property healthy, presentable and ready for use.', icon: Leaf },
@@ -28,9 +36,7 @@ const services = [
   { title: 'Facilities management', text: 'One responsive team for the ongoing maintenance your site actually needs.', icon: FileText },
 ];
 
-const heroImages = ['/images/1.webp', '/images/2.webp', '/images/3.webp', '/images/4.webp'];
-
-const GOOGLE_REVIEW_URL = 'https://g.page/r/CSCafEnf1Wc0EBM/review';
+const heroImages = [`${IMAGE_BASE}1.webp`, `${IMAGE_BASE}2.webp`, `${IMAGE_BASE}3.webp`, `${IMAGE_BASE}4.webp`];
 
 const reviews = [
   { quote: 'We are very happy with the service that Lachlan provides he is reliable and professional.', author: 'Lee' },
@@ -41,14 +47,14 @@ const reviews = [
 ];
 
 const gallery = [
-  { src: '1.webp', alt: 'Solar panels cleaned on a regional property' },
-  { src: '2.webp', alt: 'Maintained residential lawn and garden' },
-  { src: '3.webp', alt: 'Landscaped garden and grounds' },
-  { src: '4.webp', alt: 'Maintained streetscape and nature strip' },
-  { src: '5.webp', alt: 'Solar panels on a regional property' },
-  { src: '6.webp', alt: 'Maintained commercial building grounds' },
-  { src: '7.webp', alt: 'Commercial lawn and garden maintenance' },
-  { src: '8.webp', alt: 'Maintained accommodation grounds' }
+  { src: `${IMAGE_BASE}1.webp`, alt: 'Solar panels cleaned on a regional property' },
+  { src: `${IMAGE_BASE}2.webp`, alt: 'Maintained residential lawn and garden' },
+  { src: `${IMAGE_BASE}3.webp`, alt: 'Landscaped garden and grounds' },
+  { src: `${IMAGE_BASE}4.webp`, alt: 'Maintained streetscape and nature strip' },
+  { src: `${IMAGE_BASE}5.webp`, alt: 'Solar panels on a regional property' },
+  { src: `${IMAGE_BASE}6.webp`, alt: 'Maintained commercial building grounds' },
+  { src: `${IMAGE_BASE}7.webp`, alt: 'Commercial lawn and garden maintenance' },
+  { src: `${IMAGE_BASE}8.webp`, alt: 'Maintained accommodation grounds' },
 ];
 
 function Logo({ light = false }: { light?: boolean }) {
@@ -70,10 +76,88 @@ function GoogleLogo() {
   );
 }
 
+type QuoteFormProps = {
+  id: string;
+  eyebrow?: string;
+  heading: string;
+  intro: string;
+  submitClass?: string;
+};
+
+function QuoteForm({ id, eyebrow = 'Start a conversation', heading, intro, submitClass = 'button-dark' }: QuoteFormProps) {
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFormStatus('sending');
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `LSV Services - ${id === 'quote' ? 'Hero Form Enquiry' : 'Contact Page Enquiry'}`,
+          from_name: 'LSV Services Website',
+          botcheck: '',
+          name: String(formData.get('name') ?? ''),
+          phone: String(formData.get('phone') ?? ''),
+          email: String(formData.get('email') ?? ''),
+          message: String(formData.get('message') ?? ''),
+        }),
+      });
+      const result = await response.json();
+      setFormStatus(result.success ? 'success' : 'error');
+      if (result.success) form.reset();
+    } catch {
+      setFormStatus('error');
+    }
+  }
+
+  return (
+    <form id={id} className="quote-card" onSubmit={handleSubmit}>
+      <div className="quote-card-heading">
+        <p className="eyebrow">{eyebrow}</p>
+        <h2>{heading}</h2>
+        <p>{intro}</p>
+      </div>
+      <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <div className="form-grid">
+        <label>
+          <span>Name</span>
+          <input name="name" required placeholder="Your name" autoComplete="name" />
+        </label>
+        <label>
+          <span>Phone</span>
+          <input name="phone" required type="tel" placeholder="0400 000 000" autoComplete="tel" />
+        </label>
+      </div>
+      <label>
+        <span>Email</span>
+        <input name="email" required type="email" placeholder="you@example.com" autoComplete="email" />
+      </label>
+      <label>
+        <span>How can we help?</span>
+        <textarea name="message" required rows={3} placeholder="Tell us a little about the job..." />
+      </label>
+      <button className={`button ${submitClass} form-submit`} type="submit" disabled={formStatus === 'sending'}>
+        {formStatus === 'sending' ? 'Sending...' : 'Send enquiry'} <ArrowRight size={17} />
+      </button>
+      {formStatus === 'success' && (
+        <p className="form-message success-message"><Check size={15} /> Thanks, your enquiry is on its way.</p>
+      )}
+      {formStatus === 'error' && (
+        <p className="form-message error-message">We could not send that just now. Please call us on {PHONE_DISPLAY}.</p>
+      )}
+    </form>
+  );
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -99,44 +183,29 @@ function App() {
     };
   }, [lightboxIndex]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setFormStatus('sending');
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_ACCESS_KEY,
-        subject: `New enquiry from ${String(formData.get('name') ?? '')}`,
-        name: String(formData.get('name') ?? ''),
-        phone: String(formData.get('phone') ?? ''),
-        email: String(formData.get('email') ?? ''),
-        message: String(formData.get('message') ?? ''),
-      }),
-    });
-    const result = await response.json();
-    setFormStatus(result.success ? 'success' : 'error');
-    if (result.success) form.reset();
-  }
-
   return (
     <div id="top" className="site-shell">
       <div className="site-top">
-        <div className="topbar"><div className="container topbar-inner"><span>Serving the Snowy Valleys, Snowy Monaro, Riverina, ACT & Northern Victoria</span><a href="tel:0401697323"><Phone size={14} /> 0401 697 323</a></div></div>
-      <header className="site-header">
-        <div className="container header-inner">
-          <Logo />
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X /> : <Menu />}</button>
-          <nav className={menuOpen ? 'nav-open' : ''}>
-            <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
-            <a href="#about" onClick={() => setMenuOpen(false)}>Why LSV</a>
-            <a href="#work" onClick={() => setMenuOpen(false)}>Our work</a>
-            <a href="#contact" onClick={() => setMenuOpen(false)} className="nav-cta">Get a free quote <ArrowRight size={16} /></a>
-          </nav>
+        <div className="topbar">
+          <div className="container topbar-inner">
+            <span>Serving the Snowy Valleys, Snowy Monaro, Riverina, ACT &amp; Northern Victoria</span>
+            <a href={PHONE_HREF}><Phone size={14} /> {PHONE_DISPLAY}</a>
+          </div>
         </div>
-      </header>
+        <header className="site-header">
+          <div className="container header-inner">
+            <Logo />
+            <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
+              {menuOpen ? <X /> : <Menu />}
+            </button>
+            <nav className={menuOpen ? 'nav-open' : ''}>
+              <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="#about" onClick={() => setMenuOpen(false)}>Why LSV</a>
+              <a href="#work" onClick={() => setMenuOpen(false)}>Our work</a>
+              <a href="#contact" onClick={() => setMenuOpen(false)} className="nav-cta">Get a free quote <ArrowRight size={16} /></a>
+            </nav>
+          </div>
+        </header>
       </div>
 
       <main>
@@ -148,50 +217,206 @@ function App() {
               <p className="eyebrow yellow-eyebrow"><span /> Property maintenance, done properly</p>
               <h1>Property &amp; Grounds Maintenance<br /><em>Across Regional NSW &amp; the ACT</em></h1>
               <p className="hero-intro">LSV Services delivers grounds maintenance, gutter and solar panel cleaning, pressure washing, licensed weed spraying and facilities management across the Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria.</p>
-              <div className="hero-actions"><a className="button button-yellow" href="#contact">Request a free quote <ArrowUpRight size={18} /></a><a className="text-link light-link" href="tel:0401697323">Call Lachlan <ArrowRight size={17} /></a></div>
-              <div className="hero-proof"><span><strong>04</strong> years in business</span><span><strong>100%</strong> local operator</span><span><strong>AQF3</strong> accredited</span></div>
+              <div className="hero-actions">
+                <a className="button button-yellow" href="#quote">Request a free quote <ArrowUpRight size={18} /></a>
+                <a className="text-link light-link" href={PHONE_HREF}>Call Lachlan <ArrowRight size={17} /></a>
+              </div>
+              <div className="hero-proof">
+                <span><strong>04</strong> years in business</span>
+                <span><strong>100%</strong> local operator</span>
+                <span><strong>AQF3</strong> accredited</span>
+              </div>
             </div>
-            <form className="quote-card" onSubmit={handleSubmit}>
-              <div className="quote-card-heading"><p className="eyebrow">Start a conversation</p><h2>Tell us what you need.</h2><p>We offer free quotes and fast responses for residential, commercial and government work.</p></div>
-              <div className="form-grid"><label><span>Name</span><input name="name" required placeholder="Your name" /></label><label><span>Phone</span><input name="phone" required type="tel" placeholder="0400 000 000" /></label></div>
-              <label><span>Email</span><input name="email" required type="email" placeholder="you@example.com" /></label>
-              <label><span>How can we help?</span><textarea name="message" required rows={3} placeholder="Tell us a little about the job..." /></label>
-              <button className="button button-dark form-submit" type="submit" disabled={formStatus === 'sending'}>{formStatus === 'sending' ? 'Sending...' : 'Send enquiry'} <ArrowRight size={17} /></button>
-              {formStatus === 'success' && <p className="form-message success-message"><Check size={15} /> Thanks, your enquiry is on its way.</p>}
-              {formStatus === 'error' && <p className="form-message error-message">We could not send that just now. Please call us on 0401 697 323.</p>}
-            </form>
+            <QuoteForm
+              id="quote"
+              heading="Tell us what you need."
+              intro="We offer free quotes and fast responses for residential, commercial and government work."
+            />
           </div>
           <div className="scroll-cue"><span>Scroll to explore</span><ArrowDownRight size={17} /></div>
         </section>
 
-        <section className="trust-strip"><div className="container trust-items"><span><ShieldCheck /> Fully insured & compliant</span><span><Clock3 /> Same-day service available</span><span><FileText /> Free quotes, no obligation</span><span><Leaf /> Residential to government</span></div></section>
+        <section className="trust-strip">
+          <div className="container trust-items">
+            <span><ShieldCheck /> Fully insured &amp; compliant</span>
+            <span><Clock3 /> Same-day service available</span>
+            <span><FileText /> Free quotes, no obligation</span>
+            <span><Leaf /> Residential to government</span>
+          </div>
+        </section>
 
-        <section id="reviews" className="reviews-section"><div className="container"><div className="reviews-heading"><h2>What clients<br /><em>are saying.</em></h2><a className="reviews-cta" href={GOOGLE_REVIEW_URL} target="_blank" rel="noreferrer">Leave a Google review <ArrowUpRight size={16} /></a></div></div><div className="reviews-marquee"><div className="reviews-track">{[...reviews, ...reviews].map((review, index) => <a className="review-card" href={GOOGLE_REVIEW_URL} target="_blank" rel="noreferrer" key={index}><div className="review-top"><GoogleLogo /><div className="review-stars">{Array.from({ length: 5 }).map((_, i) => <Star key={i} size={15} fill="#fbbc04" stroke="#fbbc04" />)}</div></div><p className="review-quote">{review.quote}</p><p className="review-author">— {review.author}</p></a>)}</div></div></section>
+        <section id="reviews" className="reviews-section">
+          <div className="container">
+            <div className="reviews-heading">
+              <h2>What clients<br /><em>are saying.</em></h2>
+              <a className="reviews-cta" href={GOOGLE_REVIEW_URL} target="_blank" rel="noreferrer">Leave a Google review <ArrowUpRight size={16} /></a>
+            </div>
+          </div>
+          <div className="reviews-marquee">
+            <div className="reviews-track">
+              {[...reviews, ...reviews].map((review, index) => (
+                <a className="review-card" href={GOOGLE_REVIEW_URL} target="_blank" rel="noreferrer" key={index}>
+                  <div className="review-top">
+                    <GoogleLogo />
+                    <div className="review-stars">
+                      {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={15} fill="#fbbc04" stroke="#fbbc04" />)}
+                    </div>
+                  </div>
+                  <p className="review-quote">{review.quote}</p>
+                  <p className="review-author">{review.author}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
 
-        <section id="services" className="section services-section"><div className="container"><div className="section-heading split-heading"><div><p className="eyebrow">What we do</p><h2>One team for the<br /><em>whole property.</em></h2></div><p>Our capability is not limited to a fixed list. If your property needs it, we find a way to deliver it, with the right people and the right standards behind the work.</p></div><div className="service-grid">{services.map(({ title, text, icon: Icon }, index) => <article className="service-card" key={title}><span className="service-number">0{index + 1}</span><Icon className="service-icon" size={25} strokeWidth={1.5} /><h3>{title}</h3><p>{text}</p><a href="#contact" aria-label={`Enquire about ${title}`}><ChevronRight size={18} /></a></article>)}</div></div></section>
+        <section id="services" className="section services-section">
+          <div className="container">
+            <div className="section-heading split-heading">
+              <div>
+                <p className="eyebrow">What we do</p>
+                <h2>One team for the<br /><em>whole property.</em></h2>
+              </div>
+              <p>Our capability is not limited to a fixed list. If your property needs it, we find a way to deliver it, with the right people and the right standards behind the work.</p>
+            </div>
+            <div className="service-grid">
+              {services.map(({ title, text, icon: Icon }, index) => (
+                <article className="service-card" key={title}>
+                  <span className="service-number">0{index + 1}</span>
+                  <Icon className="service-icon" size={25} strokeWidth={1.5} />
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                  <a href="#contact" aria-label={`Enquire about ${title}`}><ChevronRight size={18} /></a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-        <section id="work" className="section work-section"><div className="container"><div className="section-heading split-heading"><div><p className="eyebrow">Recent work</p><h2>Good work<br /><em>speaks for itself.</em></h2></div><p>A look at the places we help keep safe, clean and looked after, from private gardens to large-scale commercial facilities.</p></div><div className="gallery-grid">{gallery.map((image, index) => <figure className="gallery-item" key={image.src} onClick={() => setLightboxIndex(index)}><img src={image.src} alt={image.alt} loading="lazy" /></figure>)}</div></div></section>
+        <section id="work" className="section work-section">
+          <div className="container">
+            <div className="section-heading split-heading">
+              <div>
+                <p className="eyebrow">Recent work</p>
+                <h2>Good work<br /><em>speaks for itself.</em></h2>
+              </div>
+              <p>A look at the places we help keep safe, clean and looked after, from private gardens to large-scale commercial facilities.</p>
+            </div>
+            <div className="gallery-grid">
+              {gallery.map((image, index) => (
+                <figure className="gallery-item" key={image.src} onClick={() => setLightboxIndex(index)}>
+                  <img src={image.src} alt={image.alt} loading="lazy" />
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
 
-        <section id="about" className="about-section"><div className="about-image" /><div className="container about-container"><div className="about-copy"><p className="eyebrow yellow-eyebrow"><span /> Built for the region</p><h2>The standard you expect.<br /><em>The service you remember.</em></h2><p>LSV Services is a local facilities maintenance provider built on the basics that matter: showing up when we say we will, communicating clearly, and finishing the job properly.</p><p>We work with our own crews and a vetted network of licensed trades to support homes, businesses and government sites across the region. That means one reliable point of contact, even when the job is bigger than a single service.</p><a className="text-link light-link" href="#contact">Meet your maintenance team <ArrowRight size={17} /></a></div><div className="about-stats"><div><strong>01</strong><span>Responsive<br />local operator</span></div><div><strong>02</strong><span>Compliance-led<br />delivery</span></div><div><strong>03</strong><span>Solutions beyond<br />the checklist</span></div></div></div></section>
+        <section id="about" className="about-section">
+          <div className="about-image" />
+          <div className="container about-container">
+            <div className="about-copy">
+              <p className="eyebrow yellow-eyebrow"><span /> Built for the region</p>
+              <h2>The standard you expect.<br /><em>The service you remember.</em></h2>
+              <p>LSV Services is a local facilities maintenance provider built on the basics that matter: showing up when we say we will, communicating clearly, and finishing the job properly.</p>
+              <p>We work with our own crews and a vetted network of licensed trades to support homes, businesses and government sites across the region. That means one reliable point of contact, even when the job is bigger than a single service.</p>
+              <a className="text-link light-link" href="#contact">Meet your maintenance team <ArrowRight size={17} /></a>
+            </div>
+            <div className="about-stats">
+              <div><strong>01</strong><span>Responsive<br />local operator</span></div>
+              <div><strong>02</strong><span>Compliance-led<br />delivery</span></div>
+              <div><strong>03</strong><span>Solutions beyond<br />the checklist</span></div>
+            </div>
+          </div>
+        </section>
 
-        <section className="cta-section"><div className="container cta-inner"><div><p className="eyebrow yellow-eyebrow"><span /> Ready when you are</p><h2>Let’s get your property<br /><em>back on track.</em></h2></div><a className="button button-yellow" href="#contact">Get your free quote <ArrowUpRight size={18} /></a></div></section>
+        <section className="cta-section">
+          <div className="container cta-inner">
+            <div>
+              <p className="eyebrow yellow-eyebrow"><span /> Ready when you are</p>
+              <h2>Let’s get your property<br /><em>back on track.</em></h2>
+            </div>
+            <a className="button button-yellow" href="#contact">Get your free quote <ArrowUpRight size={18} /></a>
+          </div>
+        </section>
+
+        <section id="contact" className="section contact-section">
+          <div className="container contact-grid">
+            <div className="contact-copy">
+              <p className="eyebrow yellow-eyebrow"><span /> Get in touch</p>
+              <h2>Request your<br /><em>free quote.</em></h2>
+              <p>Tell us about the property and what you need looked after. We will get back to you with a no-obligation quote.</p>
+              <ul className="contact-details">
+                <li><Phone size={17} /><div><span>Phone</span><a href={PHONE_HREF}>{PHONE_DISPLAY}</a></div></li>
+                <li><Mail size={17} /><div><span>Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div></li>
+                <li><MapPin size={17} /><div><span>Service area</span><p>Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria</p></div></li>
+                <li><Clock3 size={17} /><div><span>Availability</span><p>Emergency and same-day services available</p></div></li>
+              </ul>
+            </div>
+            <QuoteForm
+              id="quote-contact"
+              eyebrow="Send an enquiry"
+              heading="Start your enquiry."
+              intro="All fields are required. We respond to every enquiry."
+            />
+          </div>
+        </section>
       </main>
 
       {lightboxIndex !== null && (
         <div className="lightbox" onClick={() => setLightboxIndex(null)}>
           <button className="lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Close"><X size={28} /></button>
-          <button className="lightbox-nav lightbox-prev" onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i === null ? null : (i - 1 + gallery.length) % gallery.length)); }} aria-label="Previous"><ChevronLeft size={32} /></button>
+          <button
+            className="lightbox-nav lightbox-prev"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i === null ? null : (i - 1 + gallery.length) % gallery.length)); }}
+            aria-label="Previous"
+          ><ChevronLeft size={32} /></button>
           <figure className="lightbox-figure" onClick={(e) => e.stopPropagation()}>
             <img src={gallery[lightboxIndex].src} alt={gallery[lightboxIndex].alt} />
             <figcaption>{gallery[lightboxIndex].alt}</figcaption>
           </figure>
-          <button className="lightbox-nav lightbox-next" onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i === null ? null : (i + 1) % gallery.length)); }} aria-label="Next"><ChevronRight size={32} /></button>
+          <button
+            className="lightbox-nav lightbox-next"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i === null ? null : (i + 1) % gallery.length)); }}
+            aria-label="Next"
+          ><ChevronRight size={32} /></button>
         </div>
       )}
 
-      <footer id="contact" className="footer"><div className="container footer-top"><div className="footer-brand"><Logo light /><p>Practical property maintenance for the places that matter.</p><a href="mailto:lachlan@lsvservices.com.au">lachlan@lsvservices.com.au</a><a href="tel:0401697323">0401 697 323</a></div><div className="footer-links"><div><p className="footer-label">Explore</p><a href="#services">Services</a><a href="#about">Why LSV</a><a href="#work">Our work</a></div><div><p className="footer-label">Service areas</p><p>Snowy Valleys<br />Snowy Monaro<br />Riverina<br />ACT & Northern Victoria</p></div><div><p className="footer-label">Enquiries</p><p>Free quotes available.<br />Emergency & same-day<br />services available.</p><a className="footer-call" href="#top">Back to top <ArrowUpRight size={14} /></a>
-</div></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} LSV Services. All rights reserved.</span><a href="https://www.itscold.com.au" target="_blank" rel="noreferrer">Website by Go Polar</a></div></footer>
+      <footer className="footer">
+        <div className="container footer-top">
+          <div className="footer-brand">
+            <Logo light />
+            <p>Practical property maintenance for the places that matter.</p>
+            <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a href={PHONE_HREF}>{PHONE_DISPLAY}</a>
+          </div>
+          <div className="footer-links">
+            <div>
+              <p className="footer-label">Explore</p>
+              <a href="#services">Services</a>
+              <a href="#about">Why LSV</a>
+              <a href="#work">Our work</a>
+              <a href="#contact">Contact</a>
+            </div>
+            <div>
+              <p className="footer-label">Service areas</p>
+              <p>Snowy Valleys<br />Snowy Monaro<br />Riverina<br />ACT &amp; Northern Victoria</p>
+            </div>
+            <div>
+              <p className="footer-label">Enquiries</p>
+              <p>Free quotes available.<br />Emergency &amp; same-day<br />services available.</p>
+              <a className="footer-call" href="#top">Back to top <ArrowUpRight size={14} /></a>
+            </div>
+          </div>
+        </div>
+        <div className="container footer-bottom">
+          <span>© {new Date().getFullYear()} LSV Services. All rights reserved.</span>
+          <a href="https://www.itscold.com.au" target="_blank" rel="noreferrer">Website by Go Polar</a>
+        </div>
+      </footer>
     </div>
   );
 }
+
 export default App;
