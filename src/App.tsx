@@ -78,13 +78,14 @@ function GoogleLogo() {
 
 type QuoteFormProps = {
   id: string;
+  formType: string;
   eyebrow?: string;
   heading: string;
   intro: string;
   submitClass?: string;
 };
 
-function QuoteForm({ id, eyebrow = 'Start a conversation', heading, intro, submitClass = 'button-dark' }: QuoteFormProps) {
+function QuoteForm({ id, formType, eyebrow = 'Start a conversation', heading, intro, submitClass = 'button-dark' }: QuoteFormProps) {
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -99,9 +100,9 @@ function QuoteForm({ id, eyebrow = 'Start a conversation', heading, intro, submi
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `LSV Services - ${id === 'quote' ? 'Hero Form Enquiry' : 'Contact Page Enquiry'}`,
+          subject: `LSV Services - ${formType}`,
           from_name: 'LSV Services Website',
-          botcheck: '',
+          botcheck: formData.get('botcheck') ? 'true' : '',
           name: String(formData.get('name') ?? ''),
           phone: String(formData.get('phone') ?? ''),
           email: String(formData.get('email') ?? ''),
@@ -123,7 +124,14 @@ function QuoteForm({ id, eyebrow = 'Start a conversation', heading, intro, submi
         <h2>{heading}</h2>
         <p>{intro}</p>
       </div>
-      <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
+      />
       <div className="form-grid">
         <label>
           <span>Name</span>
@@ -229,6 +237,7 @@ function App() {
             </div>
             <QuoteForm
               id="quote"
+              formType="Hero Form Enquiry"
               heading="Tell us what you need."
               intro="We offer free quotes and fast responses for residential, commercial and government work."
             />
@@ -345,19 +354,33 @@ function App() {
             <div className="contact-copy">
               <p className="eyebrow yellow-eyebrow"><span /> Get in touch</p>
               <h2>Request your<br /><em>free quote.</em></h2>
-              <p>Tell us about the property and what you need looked after. We will get back to you with a no-obligation quote.</p>
+              <p className="contact-intro">Tell us about the property and what you need looked after. We will get back to you with a no-obligation quote.</p>
               <ul className="contact-details">
-                <li><Phone size={17} /><div><span>Phone</span><a href={PHONE_HREF}>{PHONE_DISPLAY}</a></div></li>
-                <li><Mail size={17} /><div><span>Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div></li>
-                <li><MapPin size={17} /><div><span>Service area</span><p>Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria</p></div></li>
-                <li><Clock3 size={17} /><div><span>Availability</span><p>Emergency and same-day services available</p></div></li>
+                <li>
+                  <Phone size={17} />
+                  <div><span>Phone</span><a href={PHONE_HREF}>{PHONE_DISPLAY}</a></div>
+                </li>
+                <li>
+                  <Mail size={17} />
+                  <div><span>Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div>
+                </li>
+                <li>
+                  <MapPin size={17} />
+                  <div><span>Service area</span><p>Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria</p></div>
+                </li>
+                <li>
+                  <Clock3 size={17} />
+                  <div><span>Availability</span><p>Emergency and same-day services available</p></div>
+                </li>
               </ul>
             </div>
             <QuoteForm
               id="quote-contact"
+              formType="Contact Page Enquiry"
               eyebrow="Send an enquiry"
               heading="Start your enquiry."
               intro="All fields are required. We respond to every enquiry."
+              submitClass="button-yellow"
             />
           </div>
         </section>
