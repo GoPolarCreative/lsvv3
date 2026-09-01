@@ -25,7 +25,7 @@ const PHONE_DISPLAY = '0401 697 323';
 const PHONE_HREF = 'tel:0401697323';
 const EMAIL = 'lachlan@lsvservices.com.au';
 const GOOGLE_REVIEW_URL = 'https://g.page/r/CSCafEnf1Wc0EBM/review';
-const IMAGE_BASE = '/images/';
+const IMAGE_BASE = '/';
 
 const services = [
   { title: 'Grounds maintenance', text: 'Regular care that keeps your property healthy, presentable and ready for use.', icon: Leaf },
