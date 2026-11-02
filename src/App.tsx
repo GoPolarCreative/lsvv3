@@ -3,6 +3,7 @@ import {
   ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
+  CalendarCheck,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -23,17 +24,17 @@ import {
 const WEB3FORMS_ACCESS_KEY = '537d443b-7542-48d4-b89a-a283021dfcfa';
 const PHONE_DISPLAY = '0401 697 323';
 const PHONE_HREF = 'tel:0401697323';
-const EMAIL = 'lachlan@lsvservices.com.au';
+const EMAIL = 'info@lsvservices.com.au';
 const GOOGLE_REVIEW_URL = 'https://g.page/r/CSCafEnf1Wc0EBM/review';
 const IMAGE_BASE = '/';
 
 const services = [
-  { title: 'Grounds maintenance', text: 'Regular care that keeps your property healthy, presentable and ready for use.', icon: Leaf },
-  { title: 'Gutter cleaning', text: 'Clear, careful gutter work that protects buildings from avoidable water damage.', icon: ShieldCheck },
-  { title: 'Solar panel cleaning', text: 'Restore the performance and finish of your solar investment with a professional clean.', icon: Sparkles },
-  { title: 'Pressure washing', text: 'Lift the build-up from hard surfaces and bring tired exteriors back to life.', icon: Zap },
-  { title: 'Licensed weed spraying', text: 'Targeted vegetation control delivered safely by an AQF3 accredited operator.', icon: Check },
-  { title: 'Facilities management', text: 'One responsive team for the ongoing maintenance your site actually needs.', icon: FileText },
+  { title: 'Grounds maintenance', text: 'Mowing, edging, whipper-snipping, hedging and garden beds, on a schedule that suits the site.', icon: Leaf },
+  { title: 'Gutter cleaning', text: 'Gutters and downpipes cleared of leaves and debris so water drains where it should, not into the roof.', icon: ShieldCheck },
+  { title: 'Solar panel cleaning', text: 'Dust, grime and bird mess removed from panels so they generate at full output again.', icon: Sparkles },
+  { title: 'Pressure washing', text: 'Driveways, paths, patios and building exteriors blasted clean of dirt, moss and grime.', icon: Zap },
+  { title: 'Licensed weed spraying', text: 'Targeted weed and vegetation control, applied by an AQF3-accredited operator.', icon: Check },
+  { title: 'Facilities management', text: 'Ongoing property upkeep handled by one crew: regular visits, reactive callouts, and the small jobs in between.', icon: FileText },
 ];
 
 const heroImages = [`${IMAGE_BASE}1.webp`, `${IMAGE_BASE}2.webp`, `${IMAGE_BASE}3.webp`, `${IMAGE_BASE}4.webp`];
@@ -196,7 +197,7 @@ function App() {
       <div className="site-top">
         <div className="topbar">
           <div className="container topbar-inner">
-            <span>Serving the Snowy Valleys, Snowy Monaro, Riverina, ACT &amp; Northern Victoria</span>
+            <span>Serving the Snowy Valleys, Snowy Monaro, Riverina &amp; ACT</span>
             <a href={PHONE_HREF}><Phone size={14} /> {PHONE_DISPLAY}</a>
           </div>
         </div>
@@ -210,7 +211,7 @@ function App() {
               <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
               <a href="#about" onClick={() => setMenuOpen(false)}>Why LSV</a>
               <a href="#work" onClick={() => setMenuOpen(false)}>Our work</a>
-              <a href="#contact" onClick={() => setMenuOpen(false)} className="nav-cta">Get a free quote <ArrowRight size={16} /></a>
+              <a href="#contact" onClick={() => setMenuOpen(false)} className="nav-cta">Get a Fast Quote <ArrowRight size={16} /></a>
             </nav>
           </div>
         </header>
@@ -222,12 +223,12 @@ function App() {
           <div className="hero-overlay" />
           <div className="container hero-content">
             <div className="hero-copy">
-              <p className="eyebrow yellow-eyebrow"><span /> Property maintenance, done properly</p>
-              <h1>Property &amp; Grounds Maintenance<br /><em>Across Regional NSW &amp; the ACT</em></h1>
-              <p className="hero-intro">LSV Services delivers grounds maintenance, gutter and solar panel cleaning, pressure washing, licensed weed spraying and facilities management across the Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria.</p>
+              <p className="eyebrow yellow-eyebrow"><span /> Grounds maintenance, done properly</p>
+              <h1>Lawn Mowing &amp; Property Services<br /><em>Across Regional NSW &amp; the ACT</em></h1>
+              <p className="hero-intro">LSV Services delivers grounds maintenance, gutter cleaning, pressure washing, and licensed weed spraying across the Snowy Valleys, Riverina and Australian Capital Territory.</p>
               <div className="hero-actions">
-                <a className="button button-yellow" href="#quote">Request a free quote <ArrowUpRight size={18} /></a>
-                <a className="text-link light-link" href={PHONE_HREF}>Call Lachlan <ArrowRight size={17} /></a>
+                <a className="button button-yellow" href="#quote">Get a Fast Quote <ArrowUpRight size={18} /></a>
+                <a className="text-link light-link" href={PHONE_HREF}>Call Now <ArrowRight size={17} /></a>
               </div>
               <div className="hero-proof">
                 <span><strong>04</strong> years in business</span>
@@ -249,8 +250,8 @@ function App() {
           <div className="container trust-items">
             <span><ShieldCheck /> Fully insured &amp; compliant</span>
             <span><Clock3 /> Same-day service available</span>
-            <span><FileText /> Free quotes, no obligation</span>
-            <span><Leaf /> Residential to government</span>
+            <span><CalendarCheck /> Punctual and reliable</span>
+            <span><Leaf /> Residential, commercial, government</span>
           </div>
         </section>
 
@@ -286,7 +287,7 @@ function App() {
                 <p className="eyebrow">What we do</p>
                 <h2>One team for the<br /><em>whole property.</em></h2>
               </div>
-              <p>Our capability is not limited to a fixed list. If your property needs it, we find a way to deliver it, with the right people and the right standards behind the work.</p>
+              <p>From regular mowing and garden care to the odd jobs most contractors won’t touch, it’s all done by the same crew you’ll get to know. No juggling three different people for one property.</p>
             </div>
             <div className="service-grid">
               {services.map(({ title, text, icon: Icon }, index) => (
@@ -328,13 +329,13 @@ function App() {
               <p className="eyebrow yellow-eyebrow"><span /> Built for the region</p>
               <h2>The standard you expect.<br /><em>The service you remember.</em></h2>
               <p>LSV Services is a local facilities maintenance provider built on the basics that matter: showing up when we say we will, communicating clearly, and finishing the job properly.</p>
-              <p>We work with our own crews and a vetted network of licensed trades to support homes, businesses and government sites across the region. That means one reliable point of contact, even when the job is bigger than a single service.</p>
+              <p>We work with our own crews to support homes, businesses and government sites across the region, so you get one reliable point of contact, even when the job is bigger than a single service.</p>
               <a className="text-link light-link" href="#contact">Meet your maintenance team <ArrowRight size={17} /></a>
             </div>
             <div className="about-stats">
               <div><strong>01</strong><span>Responsive<br />local operator</span></div>
               <div><strong>02</strong><span>Compliance-led<br />delivery</span></div>
-              <div><strong>03</strong><span>Solutions beyond<br />the checklist</span></div>
+              <div><strong>03</strong><span>No job<br />falls through</span></div>
             </div>
           </div>
         </section>
@@ -345,7 +346,7 @@ function App() {
               <p className="eyebrow yellow-eyebrow"><span /> Ready when you are</p>
               <h2>Let’s get your property<br /><em>back on track.</em></h2>
             </div>
-            <a className="button button-yellow" href="#contact">Get your free quote <ArrowUpRight size={18} /></a>
+            <a className="button button-yellow" href="#contact">Get a Fast Quote <ArrowUpRight size={18} /></a>
           </div>
         </section>
 
@@ -353,8 +354,8 @@ function App() {
           <div className="container contact-grid">
             <div className="contact-copy">
               <p className="eyebrow yellow-eyebrow"><span /> Get in touch</p>
-              <h2>Request your<br /><em>free quote.</em></h2>
-              <p className="contact-intro">Tell us about the property and what you need looked after. We will get back to you with a no-obligation quote.</p>
+              <h2>Get a<br /><em>fast quote.</em></h2>
+              <p className="contact-intro">Tell us about the property and what you need looked after, and we’ll get back to you with a quote and a plan to match.</p>
               <ul className="contact-details">
                 <li>
                   <Phone size={17} />
@@ -366,7 +367,7 @@ function App() {
                 </li>
                 <li>
                   <MapPin size={17} />
-                  <div><span>Service area</span><p>Snowy Valleys, Snowy Monaro, Riverina, ACT and Northern Victoria</p></div>
+                  <div><span>Service area</span><p>Snowy Valleys, Snowy Monaro, Riverina and ACT</p></div>
                 </li>
                 <li>
                   <Clock3 size={17} />
@@ -410,7 +411,7 @@ function App() {
         <div className="container footer-top">
           <div className="footer-brand">
             <Logo light />
-            <p>Practical property maintenance for the places that matter.</p>
+            <p>Grounds maintenance, done properly.</p>
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <a href={PHONE_HREF}>{PHONE_DISPLAY}</a>
           </div>
@@ -424,7 +425,7 @@ function App() {
             </div>
             <div>
               <p className="footer-label">Service areas</p>
-              <p>Snowy Valleys<br />Snowy Monaro<br />Riverina<br />ACT &amp; Northern Victoria</p>
+              <p>Snowy Valleys<br />Snowy Monaro<br />Riverina<br />ACT</p>
             </div>
             <div>
               <p className="footer-label">Enquiries</p>
