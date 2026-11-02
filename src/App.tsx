@@ -240,7 +240,7 @@ function App() {
               id="quote"
               formType="Hero Form Enquiry"
               heading="Tell us what you need."
-              intro="We offer free quotes and fast responses for residential, commercial and government work."
+              intro="We offer fast quotes and quick responses for residential, commercial and government work."
             />
           </div>
           <div className="scroll-cue"><span>Scroll to explore</span><ArrowDownRight size={17} /></div>
@@ -429,7 +429,7 @@ function App() {
             </div>
             <div>
               <p className="footer-label">Enquiries</p>
-              <p>Free quotes available.<br />Emergency &amp; same-day<br />services available.</p>
+              <p>Fast quotes available.<br />Emergency &amp; same-day<br />services available.</p>
               <a className="footer-call" href="#top">Back to top <ArrowUpRight size={14} /></a>
             </div>
           </div>
